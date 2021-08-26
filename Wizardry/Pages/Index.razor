@@ -1,0 +1,71 @@
+﻿@page "/"
+@using Model
+    <p class="alert alert-info opacity-@opacity">@message</p>
+    <EditForm Model="employee" OnValidSubmit="handleValidSubmit">
+        <div class="row @(step != 1 ? "d-none" : "" ) ">
+            <label for="fullName">Full Name</label>
+            <InputText @bind-Value="employee.FullName" id="fullname" class="form-control" />
+            <label for="age">Age</label>
+            <InputNumber @bind-Value="employee.Age" id="age" class="form-control" />
+            <label for="dateOfBirth">Date of Birth</label>
+            <InputDate @bind-Value="employee.DateOfBirth" id="dateOfBirth" class="form-control" />
+        </div>
+        <div class="row @(step != 2 ? "d-none":"" ) ">
+            <label for="Street">Street</label>
+            <InputText @bind-Value="employee.Street" class="form-control"/>
+            <label for="Municipality">Municipality</label>
+            <InputText @bind-Value="employee.Municipality" class="form-control" />
+            <label for="Province">Province</label>
+            <InputText @bind-Value="employee.Province" class="form-control" />
+        </div>
+        <div class="row @(step != 3 ? "d-none" : "" ) ">
+            <label for="email">Email Address</label>
+            <InputText @bind-Value="employee.EmailAddress" class="form-control" />
+            <label for="contactNumber">Contact Number</label>
+            <InputText @bind-Value="employee.ContactNumber" class="form-control" />
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-6">
+                <button @onclick="prevPage" @onclick:preventDefault class="btn btn-primary" disabled=@(step == 1)>Prev</button>
+                <button @onclick="nextPage" @onclick:preventDefault class="btn btn-primary" disabled=@(step == 3)>Next</button>
+            </div>
+            <div class="col-sm-6">
+                <button class="btn btn-primary float-right @(step != 3 ? "d-none": "")" disabled=@(isDisabled)>Save</button>
+            </div>
+        </div>
+    </EditForm>
+@opacity
+@code 
+{
+    private Employee employee = new();
+
+    private string message = string.Empty;
+
+    private int step { get; set; } = 1;
+
+    private bool isDisabled = false;
+
+    private int opacity = 0;
+
+    private void nextPage() => step++;
+
+    private void prevPage() => step--;
+
+    public async Task handleValidSubmit()
+    {
+        opacity = 100;
+
+        message = "Validating Data. Please wait";
+
+        this.isDisabled = true;
+
+        await Task.Delay(10_000);
+
+        message = "Record has been saved!";
+
+        this.isDisabled = false;
+
+        step = 1;
+    }
+
+}
